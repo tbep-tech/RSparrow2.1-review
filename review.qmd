@@ -7,3 +7,20 @@ date: today
 date-format: medium
 ---
 
+The following is a code and domain review of *RSPARROW* prior to release of version 2.1.  The review is based off all content on the branch `rmdremove` of the `rsparrow-development` repository.  The branch was downloaded on March 20th, 2025 and unzipped to a local directory, after which an RStudio Project was created in the same directory for evaluating the model.  The package was loaded using `devtools::load_all('RSPARROW_master')` and any missing package dependencies were installed following the prompt.  Missing package dependencies were all installed without issue. A local installation of R version 4.4.2 was used, which was also the recommended version included with the repository.  
+
+As with my previous review of version 2.0, this review was created after running the calibrated total phosphorus model for Tampa Bay using the file *UserTutorialDynamic/results/sparrow_control.R*.  The model ran successfully without issue and results were available after a few minutes.  
+
+## Code review
+
+My previous review noted that several .Rmd files were located in the R folder of the package.  As noted, only R files should be at this location and it looks most .Rmd files have been removed from the package completely.  Reviewing the content in the posted issue in the repository outlines these changes and I gather the functionality provided by the .Rmd files has been converted to separate R functions.  I know this is a tedious way to create .Rmd reports, but I'm glad this change has been made given that debugging and additional modifications will be much easier.  I greatly appreciate that this change has been made and have also verified that the output from the new version is similar to the previous.
+
+It also appears that some of my code styling suggestions were incorporated, particularly in the use of spacing for `if/else` statements, the assignment operators, and mathematical operations. These are all good changes that have improved legibility of the code.  There were also a number of minor changes I suggested that were incorporated, e.g., generic functions in place of base functions was changed (e.g., lines  40, 42, 55, and 56 in `hydseq.R`). 
+
+Code testing in the `tests/testthat` folder has also been implemented following previous suggestions from myself and an earlier review.  I know this is a difficult package to develop testing, but it might be worth seeing what kind of test coverage is provided, i.e., what percentage of the code is actually tested.  This can be done using the `covr` package, which provides a function `package_coverage()` that will return a summary of the test coverage for all functions in the package. I ran this on the local version of the package and it showed only 5\% coverage.  Writing tests is tediuous and even more challenging to write good tests.  It is not a requirement for an R package, but generally good practice so I would enoucrage additional tests to be written in future verssions.  Based on the issue posted in repository, I gather these tests are primarily for functionality that was provided by .Rmd files, so I am not surprised the coverage is low.  
+
+One new potential issue I found is the declaration of the colors for some of the graphics.  For example, on line 713 in `sparrow_control.R`, there are colors named as `"light blue"`, `"dark green"`, and `"dark red"`.  These are not standard color names in R, although they seem to be working for some of the graphics on the Shiny app.  This may cause issues for other graphing devices or versions of R, so I suggest changing them to the standard naming convention that does not use spaces.  This should be easy to update using "Find" and "Replace All" in RStudio. 
+
+## Domain review
+
+This review primarily covers the changes to the documentation in the file `RSPARROW_docV2.1.pdf` in the folder `inst/doc` as identified in
